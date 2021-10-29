@@ -205,7 +205,7 @@ if(video){
              $("#numberOfVideoComments").html("");
             $("#numberOfVideoComments").html(data.noumberOfComments ? data.noumberOfComments : "0");
             $('#display_comment').html(data.comments);
-             console.log('all comments', data.comments)
+             // console.log('all comments', data.comments)
           }
         },
     });
@@ -217,12 +217,18 @@ if(video){
 
  function toggleReplies(id) {
     $("#repliesContainer" + id).toggle();
+    $("#showMoreRepliesHolder" + id).toggle();
 }
 
 
 function toggleEditable_comment_formdiv(id){
     $("#editable_comment_formdiv" + id+'form').toggle();
 }
+
+function toggleEditable_reply_formdiv(id){
+    $("#editable_reply_formdiv" + id+'form').toggle();
+}
+
 // load more comments  when user scrolled to end of the page
     function loadMoreData(paginate, video_id) {
       

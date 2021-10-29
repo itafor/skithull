@@ -112,6 +112,48 @@ function submitVideoCommentReplyForm(commentId){
        });
    }
 
+
+// update reply
+function updateCommentReplyForm(replyId, commentId){
+
+      if(!loggedInUser){
+        alert('Please login to update reply.');
+        return;
+       }
+       var replyBody = $('#editablereply_body'+replyId).val();
+       var replyID = $('#editablereply_id'+replyId).val();
+       $.ajax({
+           headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+           type: "POST",
+           url: baseUrl+'/video-reply/update',
+           data: {body:replyBody, reply_id:replyID},
+           success: function(data) {
+                 $("#repliesContainer"+commentId).html("");
+               $("#repliesContainer"+commentId).html(data);
+           }
+       });
+   }
+
+   //Delete reply
+   function deleteReply(replyId, commentId){
+      if(!confirm("Are you sure?")){
+          return;
+      }
+      
+     $.ajax({
+           type: "GET",
+           url: baseUrl+'/video-reply/destroy/reply/'+replyId+'/'+commentId,
+           dataType: 'html',
+           success: function(data) {
+            console.log("after deletes", data)
+               $("#repliesContainer"+commentId).html("");
+               $("#repliesContainer"+commentId).html(data);
+       
+           }
+       });
+   }
+
+
  function  saveUpdatedComment(commentId){
    if(!loggedInUser){
         alert('Please login to update comment.');
@@ -141,6 +183,10 @@ function submitVideoCommentReplyForm(commentId){
    }
 //Delete video comment and refresh page
    function deleteVideoComment(commentId){
+      if(!confirm("Are you sure?")){
+          return;
+      }
+
      $.ajax({
            type: "GET",
            url: baseUrl+'/video-comment/destroy/'+commentId,

@@ -49,7 +49,7 @@ Route::group([
 ], function () {
     Route::post('/write', [ReplyController::class, 'writeReply']);
     Route::post('update', [ReplyController::class, 'editReply']);
-    Route::post('destroy', [ReplyController::class, 'destroyReply']);
+    Route::get('destroy/reply/{reply_id}/{commentId}', [ReplyController::class, 'destroyReply']);
     Route::get('{comment_id}/{reply_id}', [ReplyController::class, 'viewReply']);
     Route::get('comment/reply/{id}', [ReplyController::class, 'getRepliesByComment']);
     Route::get('display-more-replies/{commentId}/{numberOfReplies}', [ReplyController::class, 'displayMoreReplies']);

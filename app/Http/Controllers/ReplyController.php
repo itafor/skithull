@@ -63,10 +63,17 @@ class ReplyController extends Controller
             'body' => 'required',
         ]);
 
+        $repliesPerPage = session()->get('repliesPerPage');
+
+
         $reply = Reply::updateReply($request->all());
 
         if ($reply) {
-            return response(['message' => 'Reply updated successfully!','reply' => $reply], 200);
+             $commentId = $reply->replyable->id;// 
+            // return response(['message' => 'Reply updated successfully!','reply' => $reply], 200);
+           // return  Video::fetchComments($comments);
+            return  Video::get_reply_comment($commentId, $repliesPerPage)['output'];
+
         }
         return response(['error' => 'An attempt to update reply failed!!'], 500);
     }
@@ -99,17 +106,20 @@ class ReplyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroyReply(Request $request)
+    public function destroyReply($reply_id, $commentId)
     {
         $reply =  Reply::where([
-        ['user_id', authUser()->id],
-        ['replyable_type', 'App\BlogModels\BlogComment'],
-        ['id',$request->id],
+        ['user_id', authUserId()],
+        ['replyable_type', 'App\Models\Comment'],
+        ['id',$reply_id],
         ])->first();
+        
+        $repliesPerPage = session()->get('repliesPerPage');
 
         if ($reply) {
             $reply->delete();
-            return response()->json(['message' => 'Reply deleted successfully']);
+            return  Video::get_reply_comment($commentId, $repliesPerPage)['output'];
+           
         }
         
         return response()->json(['error' => 'Something went wrong, please try again']);

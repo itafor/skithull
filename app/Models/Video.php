@@ -122,7 +122,7 @@ $output .= '<span id="totalNumberOfReplies'.$comment->id.'">'.count($comment->re
 $output .= '</div>
 
 <div class="pull-right ml-50">
-<span onclick="toggleReplies('.$comment->id.')" style="cursor:pointer; color:gray;" >Replies('.count($comment->replies).')  </span>
+<span onclick="toggleReplies('.$comment->id.')" style="cursor:pointer; color:gray;" >View replies('.count($comment->replies).')  </span>
 
 </div>
 
@@ -179,7 +179,7 @@ $output .='<div class="row mt-4" id="replyToVideoComment'.$comment->id.'form" st
 $output .= '<div id="repliesContainer'.$comment->id.'" style="display: none;">';
 $output .= self::get_reply_comment($comment->id)['output'];
 $output .='</div>';
-$output .= '<span onclick="showMoreReplies('.$comment->id.')" id="showMoreRepliesHolder'.$comment->id.'" style="cursor: pointer;">';
+$output .= '<span onclick="showMoreReplies('.$comment->id.')" id="showMoreRepliesHolder'.$comment->id.'" style="cursor: pointer; display: none;">';
 $output .= (int) self::get_reply_comment($comment->id)['currentRepliesCount'] == count($comment->replies) ? '' : 'see '.count($comment->replies) - (int) self::get_reply_comment($comment->id)['currentRepliesCount'].' more replies';
 $output .='</span>';
           
@@ -226,12 +226,41 @@ $output = '';
       </div>'.$reply->body.'
         <div class="row">
 <span class="mr-2" onclick="likeOrUnlikeReply('.$reply->id.','.$reply->replyable->commentable->id.','.$reply->replyable->id.')"> <i class="fa fa-thumbs-up mr-1  '.replyLikedBy($reply->id).'"></i>'.replyLikeCounts($reply->id).' likes
-</span>
-<span class="mr-2">Edit</span>
-<span class="mr-2 text-danger">Delete</span>
-<span class="mr-2" title="Report"><i class="fa fa-flag"></i></span>
+</span>';
+if(auth()->user() && $reply->isRepliedBy->id == auth()->user()->id){
+$output .='<span class="mr-2" onclick="toggleEditable_reply_formdiv('.$reply->id.')">Edit</span>';
+}
+if(auth()->user() && $reply->isRepliedBy->id == auth()->user()->id){
+$output .='<span class="mr-2 text-danger" onclick="deleteReply('.$reply->id.','.$reply->replyable->id.')">Delete</span>';
+}
+$output .='<span class="mr-2" title="Report"><i class="fa fa-flag"></i></span>
 <span class="mr-2 pull-right"   style="cursor:pointer;" title="Reply"><i class="fa fa-reply mr-1"></i>Reply</span>
 </div>
+  <div class="row" id="editable_reply_formdiv'.$reply->id.'form" style="display: none;">
+
+<form method="POST" autocomplete="off" class="mt--3" id="video_reply_form">
+<div class="row">
+<input type="hidden" name="reply_id" id="editablereply_id'.$reply->id.'" value="'.$reply->id.'">
+
+</div>
+<div class="row">
+<div class="col-md-12" style="width: 600px;">
+  <div>
+
+      <textarea class="form-control" name="body" id="editablereply_body'.$reply->id.'"  placeholder="Type a reply" rows="2" required>'.$reply->body.'</textarea>
+  </div>
+</div>
+</div>
+<div class="text-center mt-2">
+<button type="button" onclick="toggleEditable_reply_formdiv('.$reply->id.')" class="btn btn-warning mr-2">Cancel</button>
+
+<button type="button" onclick="updateCommentReplyForm('.$reply->id.','.$reply->replyable->id.')" class="btn btn-success" >Update reply</button>
+
+</div>
+</form>
+
+
+  </div>
   </div>
 </div>
    ';
