@@ -11,9 +11,11 @@
         <span> &nbsp;<b>{{Str::limit($video->author, 20)}}</b></span>
         <small>&nbsp;&nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> &nbsp;{{$video->created_at->diffForHumans()}}</small>
         <div class="">
-    <span class="mr-2"> <i class="fa fa-thumbs-up "></i> 250 Likes</span>
+    <span class="mr-2" onclick="likeOrUnlikeVideo({{$video->id}})" style="cursor: pointer;" > <i id="elementId" class="fa fa-thumbs-up {{isset($likeBy) && $likeBy->isLikedBy->id == authUserId() ? 'text-primary':''}} video-fa-thumbs-up" ></i> <label id="video_likes_holder">{{$videoLikesCount}}</label> Likes</span>
+    @if($video->user->id == checkLoggedInUser()->id)
     <span class="mr-2">Edit</span>
     <span class="mr-2 text-danger">Delete</span>
+    @endif
     <span class="mr-2" title="Report"><i class="fa fa-flag"></i></span>
   </div>
 
@@ -145,7 +147,6 @@ function updateCommentReplyForm(replyId, commentId){
            url: baseUrl+'/video-reply/destroy/reply/'+replyId+'/'+commentId,
            dataType: 'html',
            success: function(data) {
-            console.log("after deletes", data)
                $("#repliesContainer"+commentId).html("");
                $("#repliesContainer"+commentId).html(data);
        
@@ -212,7 +213,6 @@ function likeOrDislikeComment(commentId, video_id){
            url: baseUrl+'/like/comment/'+commentId+'/'+video_id,
            dataType: 'json',
            success: function(data) {
-            console.log(data.comments);
                $("#video_comment_holder").html("");
                    $('#display_comment').html(data.comments);
            }
@@ -221,7 +221,6 @@ function likeOrDislikeComment(commentId, video_id){
 
       // like or unlike a reply
 function likeOrUnlikeReply(reply_id, video_id, commentId){
-            console.log('likes data',commentId);
 
           if(!loggedInUser){
         alert('Please login to like reply.');
@@ -232,12 +231,34 @@ function likeOrUnlikeReply(reply_id, video_id, commentId){
            url: baseUrl+'/like/reply/'+reply_id+'/'+video_id+'/'+commentId,
            dataType: 'html',
            success: function(data) {
-            // console.log('likes data',data);
-
-               // $("#repliesContainer"+commentId).show();
+            
                $("#repliesContainer"+commentId).html("");
                $("#repliesContainer"+commentId).html(data);
 
+           }
+       });
+   }
+
+      // Like or unlike a video
+function likeOrUnlikeVideo(video_id){
+          
+          if(!loggedInUser){
+        alert('Please login to like video.');
+        return;
+       }
+       $.ajax({
+           type: "GET",
+           url: baseUrl+'/like/video/'+video_id,
+           dataType: 'json',
+           success: function(data) {
+              if(data.video.likedBy && data.video.likedBy.is_liked_by.id === loggedInUser.id){
+                $("#elementId").addClass("text-primary");
+              }else{
+                $("#elementId").removeClass("text-primary");
+              }
+
+               $("#video_likes_holder").html("");
+               $("#video_likes_holder").html(data.video.likes_count);
            }
        });
    }

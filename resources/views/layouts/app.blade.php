@@ -265,16 +265,12 @@ function showMoreReplies(commentId){
            numberOfReplies++
 var noFoReplies = $("#totalNumberOfReplies"+commentId).text();
 
-        // console.log("testing replies data", numberOfReplies)
- // event.preventDefault()
    $.ajax({
       url: baseUrl+"/video-reply/display-more-replies/" + commentId + "/" + numberOfReplies,
       method: "GET",
       datatype: "html",
       success: function(data){
-        // console.log("testing replies data", data)
-
-// console.log("totalNumberOfReplies", noFoReplies)
+       
         if(data){
          $("#repliesContainer"+commentId).html("");
 

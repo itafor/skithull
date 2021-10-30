@@ -117,7 +117,7 @@ $output .= '<span class="mr-2 text-danger" onclick="deleteVideoComment('.$commen
 }
 
 $output .='<span class="mr-2" title="Report"><i class="fa fa-flag"></i></span>';
-$output .= '<span id="totalNumberOfReplies'.$comment->id.'">'.count($comment->replies).'</span>';
+$output .= '<span id="totalNumberOfReplies'.$comment->id.'" style="display:none;">'.count($comment->replies).'</span>';
 
 $output .= '</div>
 

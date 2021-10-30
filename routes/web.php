@@ -58,7 +58,7 @@ Route::group([
 Route::group([
     'prefix' => 'like'
 ], function () {
-    Route::post('video', [LikeController::class, 'likeVideo']);
+    Route::get('video/{video_id}', [LikeController::class, 'likeVideo']);
     Route::get('comment/{commentId}/{video_id}', [LikeController::class, 'likeUnlikeComment']);
     Route::get('reply/{reply_id}/{video_id}/{commentId}', [LikeController::class, 'likeUnlikeReply']);
 });

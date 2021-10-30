@@ -40,6 +40,7 @@ class VideoResource extends JsonResource
                         ['commentable_id', $this->id],
                         ['commentable_type','App\Models\Video']
                         ])->get()),
+             'likedBy' =>  videoIsLikedBy($this->id),
         ];
     }
 }

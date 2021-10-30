@@ -21,35 +21,29 @@ public function __construct(){
      *
      * @return \Illuminate\Http\Response
      */
-    public function likeVideo(Request $request)
+    public function likeVideo($video_id)
     {
-        $data = $request->all();
 
         $like =	Like::where([
             'user_id' => authUserId(),
-            'likeable_id' => $data['likeable_id'],
+            'likeable_id' => $video_id,
             'likeable_type' => 'App\Models\Video',
         ])->first();
-        $post = Video::where('id', $data['likeable_id'])->first();
-        $isLikedByUserId = Like::where([
-        ['user_id', authUserId()],
-        ['likeable_id', $data['likeable_id']],
-        ['liked', 1],
-        [ 'likeable_type', 'App\Models\Video']
-        ])->first();
+
+        $video = Video::where('id', $video_id)->first();
        
         if ($like) {
             $like->liked = $like->liked == 1 ? false : true;
             $like->save();
-            return response()->json(['status' => $like->liked, 'data' => new VideoResource($post)]);
+            return response()->json(['status' => $like->liked, 'video' => new VideoResource($video)]);
         } else {
             $like = Like::create([
              'user_id' => authUserId(),
              'liked' => true,
-             'likeable_id' => $data['likeable_id'],
+             'likeable_id' => $video_id,
              'likeable_type' => 'App\Models\Video',
             ]);
-            return response()->json(['status' => $like->liked]);
+            return response()->json(['status' => $like->liked, 'video' => new VideoResource($video)]);
         }
     }
 

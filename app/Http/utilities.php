@@ -122,3 +122,13 @@ function getFirstLetterOfUserNames($full_name) {
         $result .= strtoupper($word[0]);
     return $result;
 }
+
+function  videoIsLikedBy($videoId)
+ {
+  return  Like::where([
+                        ['liked',1],
+                        ['user_id', authUserId()],
+                        ['likeable_id', $videoId],
+                        ['likeable_type', 'App\Models\Video']
+                     ])->with(['isLikedBy'])->first();
+}

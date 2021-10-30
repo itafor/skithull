@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\VideoResource;
 use App\Http\Resources\VideoResourceCollection;
+use App\Models\Like;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,15 @@ class VideoController extends Controller
      public function watchVideo($uuid)
     {
         $data['active_video'] = Video::where('uuid', $uuid)->first();
-    	$data['video'] = Video::where('uuid', $uuid)->first();
+        $data['video'] = Video::where('uuid', $uuid)->first();
+    	$data['videoLikesCount'] = count(Like::where([
+            ['likeable_id', $data['video']->id],
+            ['likeable_type', 'App\Models\Video'],
+            ['liked', 1],
+        ])->get());
+
+        $data['likeBy'] = videoIsLikedBy($data['video']->id);
+
         $data['video_comments'] = $data['video']->comments;
     	$data['allvideos'] = Video::orderBy("created_at", "desc")->paginate(5);
     	return view('videos.watch', $data);
