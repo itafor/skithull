@@ -4,13 +4,16 @@ namespace App\Models;
 
 use App\Models\Reply;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use CyrildeWit\EloquentViewable\InteractsWithViews;
+use CyrildeWit\EloquentViewable\Contracts\Viewable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
-class Video extends Model
+class Video extends Model implements Viewable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithViews;
 
        /**
      * The attributes that are mass assignable.
@@ -62,6 +65,7 @@ public static function uploadNewVideo($data) {
     'author' => $data['author'],
     'description' => isset($data['description']) ? $data['description'] : null,
     'uuid' => generateUUID(),
+    'title_slug' => Str::slug($data['video_title'], '-'),
     'video_url' => isset($data['video_url']) && $data['channel'] == 'youTube'  ? $embededVideoYouTubeVideo : uploadVideo($data['video_url']),
 
     ]);

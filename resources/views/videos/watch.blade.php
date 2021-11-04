@@ -8,26 +8,31 @@
         <iframe height="500"  src="{{$video->video_url}}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       <div class="card-body">
         <h5 class="card-title">{{$video->video_title}}</h5>
-        <span> &nbsp;<b>{{Str::limit($video->author, 20)}}</b></span>
-        <small>&nbsp;&nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> &nbsp;{{$video->created_at->diffForHumans()}}</small>
+        <span>Skit Maker: &nbsp;<b>{{Str::limit($video->author, 20)}}</b></span> &nbsp;
+        <small> <i class="fa fa-eye" aria-hidden="true"></i> {{$views_count}} views</small>
+        <small>&nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> &nbsp;{{$video->created_at->diffForHumans()}}</small>
+        <small> <b>Uploaded by:</b> {{$video->user->first_name}}  {{$video->user->last_name}}</small>
+
         <div class="">
-    <span class="mr-2" onclick="likeOrUnlikeVideo({{$video->id}})" style="cursor: pointer;" > <i id="elementId" class="fa fa-thumbs-up {{isset($likeBy) && $likeBy->isLikedBy->id == authUserId() ? 'text-primary':''}} video-fa-thumbs-up" ></i> <label id="video_likes_holder">{{$videoLikesCount}}</label> Likes</span>
+    <span class="mr-2" onclick="likeOrUnlikeVideo({{$video->id}})" style="cursor: pointer;" > <i id="elementId" class="fa fa-thumbs-up {{isset($likeBy) && $likeBy->isLikedBy->id == authUserId() ? 'text-primary':''}} video-fa-thumbs-up" ></i> <label id="video_likes_holder">{{$videoLikesCount}}</label> likes</span>
+   @auth
     @if($video->user->id == checkLoggedInUser()->id)
-    <span class="mr-2">Edit</span>
-    <span class="mr-2 text-danger">Delete</span>
+    <span class="mr-2"><a href="{{route('video.edit', [$video->uuid])}}" style="text-decoration: none; color: #000;">Edit</a></span>
+    <span class="mr-2 text-danger"> <a onclick="return confirm('Are you sure?')" href="{{route('my.video.destroy', [$video->uuid])}}" style="text-decoration: none; color: red;"> Delete </a> </span>
     @endif
+    @endauth
     <span class="mr-2" title="Report"><i class="fa fa-flag"></i></span>
   </div>
 
     @include('videos.comments.commentForm')
           <hr>
           <p id="lessVideoDescription">
-          {{Str::limit($video->description, 210) }} 
-                  @if(strlen($video->description) > 210)
+          {{Str::limit($video_description, 210) }} 
+                  @if(strlen($video_description) > 210)
               <b onclick="seeMoreVideoDescriotion({{$video->id}})" style="cursor:pointer;">See more</b>
               @endif
           </p>
-          <p style="display: none;" id="moreVideoDescription">{!! $video->description !!} <b onclick="seeLessVideoDescription()" style="cursor: pointer;">&nbsp;See Less</b></p>
+          <p style="display: none;" id="moreVideoDescription">{!! $video_description !!} <b onclick="seeLessVideoDescription()" style="cursor: pointer;">&nbsp;See Less</b></p>
 <hr>
  <!-- Comments and replies -->
    <br />

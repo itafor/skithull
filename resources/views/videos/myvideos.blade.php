@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+                      @include('alerts.message')
    <div class="row">
     @if(isset($videos) && count($videos) >=1)
     @foreach($videos as $video)

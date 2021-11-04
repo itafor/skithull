@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 // $GLOBALS['repliesPerPage'] = 2;
 function authUserId()
 {
-   return auth()->user()->id;
+   return auth()->user() ? auth()->user()->id : '';
 }
 
 function generateUUID()

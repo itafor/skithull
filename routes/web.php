@@ -33,7 +33,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/upload/video', [VideoController::class, 'createNewVideo'])->name('video.create');
 Route::post('/create/video', [VideoController::class, 'storeNewVideo'])->name('video.store');
 Route::get('/my-videos', [VideoController::class, 'myVideos'])->name('my.videos');
-Route::get('/video/watch/{uuid}', [VideoController::class, 'watchVideo'])->name('video.watch');
+Route::get('/video/watch/{uuid}/{title_slug}', [VideoController::class, 'watchVideo'])->name('video.watch');
+Route::get('/video/{uuid}/manage', [VideoController::class, 'editVideo'])->name('video.edit');
+Route::post('/video/update', [VideoController::class, 'updateVideo'])->name('video.update');
+Route::get('/my-video/destroy/{video_uuid}', [VideoController::class, 'destroyVideo'])->name('my.video.destroy');
 
 // video comments
 Route::post('/comment/add', [CommentController::class, 'writeComment'])->name('video.comment.add');
